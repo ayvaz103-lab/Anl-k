@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Ege Gold Kuyumculuk | Anlık Fiyatlar</title>
+
+  <style>
+    :root{
+      --gold1:#8a5d00;
+      --gold2:#d9b04c;
+      --gold3:#fff2c9;
+      --bg:#f7e7b8;
+      --text:#1b1b1b;
+      --muted: rgba(27,27,27,.72);
+      --radius:18px;
+    }
+
+    *{ box-sizing:border-box; }
+    html, body{ height:100%; }
+
+    body{
+      margin:0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 0%, rgba(217,176,76,.35), transparent 60%),
+        linear-gradient(135deg, var(--gold3), var(--bg));
+    }
+
+    /* Sayfa düzeni */
+    .page{
+      min-height: 100dvh;
+      display:flex;
+      justify-content:center;
+    }
+
+    .wrap{
+      width: min(1100px, 100%);
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    /* Üst bar */
+    .topbar{
+      background: linear-gradient(90deg, var(--gold1), var(--gold2));
+      border-radius: var(--radius);
+      padding: 16px 16px;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.18);
+    }
+
+    .brand{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .brand .title{
+      font-weight: 900;
+      letter-spacing: .8px;
+      font-size: 16px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .brand .sub{
+      font-size: 12px;
+      opacity:.92;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-shrink:0;
+    }
+    .pill{
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.28);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background:#33d17a;
+      box-shadow:0 0 0 3px rgba(51,209,122,.18);
+    }
+    .btn{
+      border:none;
+      background:#fff;
+      color:#1b1b1b;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor:pointer;
+    }
+
+    /* Iframe kartı */
+    .card{
+      flex:1;
+      min-height:0;
+      border-radius: var(--radius);
+      overflow:hidden;
+      background: rgba(255,255,255,.85);
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 18px 45px rgba(0,0,0,.22);
+    }
+
+    .frame{
+      width:100%;
+      height: calc(100dvh - 120px); /* header + padding sonrası kalan alan */
+      min-height: 700px;
+      border:0;
+      display:block;
+      background:#fff;
+    }
+
+    .footer{
+      text-align:center;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 2px 0 6px;
+    }
+
+    /* Mobil iyileştirme */
+    @media (max-width: 600px){
+      .wrap{ padding: 12px; }
+      .topbar{ padding: 14px; }
+      .btn{ padding: 9px 12px; }
+      .frame{ height: calc(100dvh - 110px); min-height: 680px; }
+    }
+
+    /* PC’de daha ferah */
+    @media (min-width: 900px){
+      .brand .title{ font-size:18px; }
+      .frame{ min-height: 820px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="wrap">
+
+      <div class="topbar">
+        <div class="brand">
+          <div class="title">EGE GOLD KUYUMCULUK</div>
+          <div class="sub">Anlık Altın & Döviz Fiyatları</div>
+        </div>
+
+        <div class="actions">
+          <div class="pill"><span class="dot"></span> Canlı</div>
+          <button class="btn" id="refreshBtn" type="button">Yenile</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <iframe
+          id="priceFrame"
+          class="frame"
+          src="https://sukobfiyat.com/mobil.html"
+          loading="eager"
+          referrerpolicy="no-referrer"
+          title="SUKOB Anlık Fiyatlar">
+        </iframe>
+      </div>
+
+      <div class="footer">Bilgilendirme amaçlıdır.</div>
+
+    </div>
+  </div>
+
+  <script>
+    const frame = document.getElementById("priceFrame");
+    const btn = document.getElementById("refreshBtn");
+
+    function yenile(){
+      frame.src = "https://sukobfiyat.com/mobil.html?ts=" + Date.now();
+    }
+
+    btn.addEventListener("click", yenile);
+    setInterval(yenile, 60000);
+  </script>
+</body>
+</html>
