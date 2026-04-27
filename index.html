@@ -3,115 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Efe Gold | Canlı Fiyatlar</title>
+    <title>Efe Gold | Canlı Pano</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Orbitron:wght@700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; margin: 0; }
-        .gold-card { background: white; border: 1px solid #e2e8f0; border-radius: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: 0.3s; }
-        .price-font { font-family: 'Orbitron', sans-serif; }
-        .text-gold { color: #b45309; }
-        .update-flash { animation: flash 0.6s ease-out; }
-        @keyframes flash { 0% { background-color: #fef3c7; } 100% { background-color: white; } }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; margin: 0; }
+        
+        .gold-card { 
+            background: white; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 1.25rem; 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); 
+            transition: all 0.4s ease;
+        }
+
+        /* Fiyat değiştiğinde parlayacak olan animasyon */
+        .update-flash { animation: flash 1s ease-out; }
+        @keyframes flash { 
+            0% { background-color: #fef3c7; border-color: #d4af37; transform: scale(1.02); } 
+            100% { background-color: white; transform: scale(1); } 
+        }
+
+        .price-font { font-family: 'Orbitron', sans-serif; letter-spacing: -1px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        
+        header { background: white; border-bottom: 4px solid #b45309; }
     </style>
 </head>
 <body class="min-h-screen">
 
-    <header class="bg-white border-b-4 border-amber-600 p-5 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
+    <header class="p-5 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div>
-                <h1 class="text-3xl font-black tracking-tighter uppercase italic text-slate-800">
+                <h1 class="text-3xl md:text-4xl font-black tracking-tighter uppercase italic text-slate-800">
                     <span class="text-amber-600">EFE GOLD</span> KUYUMCU
                 </h1>
-                <div class="flex items-center gap-2 mt-1">
-                    <span id="date" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">Yükleniyor...</span>
-                    <span id="sync-status" class="status-dot bg-amber-500"></span>
-                    <span id="status-text" class="text-[9px] font-bold text-amber-600 uppercase italic">Bağlanıyor</span>
+                <div class="flex items-center gap-3 mt-1">
+                    <span id="date" class="text-[11px] text-slate-400 font-bold uppercase tracking-widest italic">Yükleniyor...</span>
+                    <span id="sync-status" class="status-dot bg-amber-500 animate-pulse"></span>
+                    <span id="status-text" class="text-[10px] font-bold text-amber-600 uppercase italic">Canlı Bağlantı</span>
                 </div>
             </div>
             <div class="text-right">
-                <div id="clock" class="text-2xl font-black text-slate-700 price-font italic">00:00:00</div>
+                <div id="clock" class="text-3xl font-black text-slate-700 price-font italic">17:08:47</div>
+                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Her 10 saniyede bir güncellenir</p>
             </div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto p-4 md:p-8">
-        <div id="price-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <main class="max-w-7xl mx-auto p-6">
+        <div id="price-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             </div>
     </main>
 
-    <footer class="p-8 text-center text-slate-400 text-[10px] font-bold tracking-[0.3em] uppercase mt-10">
-        © 2026 EFE GOLD KUYUMCU - ŞANLIURFA
+    <footer class="p-8 text-center text-slate-400 text-[10px] font-bold tracking-[0.4em] uppercase mt-4">
+        © 2026 EFE GOLD KUYUMCU - ŞANLIURFA / KARAKÖPRÜ
     </footer>
 
     <script>
-        // --- GİZLİ AYARLAR ---
-        const SATIS_FARKI = 250; 
-        const ALIS_FARKI = 20;
+        // --- GÜNCEL AYARLAR ---
+        const SATIS_FARKI = 80;  // Satış piyasanın 80 TL üstü
+        const ALIS_FARKI = 20;   // Alış piyasanın 20 TL altı
         
         const URUNLER = [
-            { id: "gram-altin", ad: "Gram Altın (24A)", icon: "fa-coins", type: "gold" },
+            { id: "gram-altin", ad: "Has Altın (24A)", icon: "fa-coins", type: "gold" },
             { id: "22-ayar-bilezik", ad: "22 Ayar Bilezik", icon: "fa-ring", type: "gold" },
-            { id: "ceyrek-altin", ad: "Çeyrek Altın", icon: "fa-dot-circle", type: "gold" },
-            { id: "yarim-altin", ad: "Yarım Altın", icon: "fa-adjust", type: "gold" },
-            { id: "tam-altin", ad: "Tam Altın", icon: "fa-circle", type: "gold" },
-            { id: "gumus", ad: "Has Gümüş (GR)", icon: "fa-gem", type: "other" },
+            { id: "18-ayar-altin", ad: "18 Ayar Altın", icon: "fa-gem", type: "gold" },
+            { id: "14-ayar-altin", ad: "14 Ayar Altın", icon: "fa-gem", type: "gold" },
+            { id: "ceyrek-altin", ad: "Yeni Çeyrek", icon: "fa-dot-circle", type: "gold" },
+            { id: "yarim-altin", ad: "Yeni Yarım", icon: "fa-adjust", type: "gold" },
+            { id: "tam-altin", ad: "Yeni Tam", icon: "fa-circle", type: "gold" },
+            { id: "ata-altin", ad: "Ata Lira", icon: "fa-crown", type: "gold" },
             { id: "USD", ad: "ABD Doları", icon: "fa-dollar-sign", type: "currency" },
             { id: "EUR", ad: "Euro", icon: "fa-euro-sign", type: "currency" }
         ];
-
-        // Başlangıç/Yedek Fiyatlar (Ekran asla boş kalmasın diye)
-        let fallbackData = {
-            "gram-altin": { Alış: "2.450,00", Satış: "2.460,00" },
-            "22-ayar-bilezik": { Alış: "2.250,00", Satış: "2.280,00" },
-            "ceyrek-altin": { Alış: "4.050,00", Satış: "4.120,00" },
-            "yarim-altin": { Alış: "8.100,00", Satış: "8.240,00" },
-            "tam-altin": { Alış: "16.200,00", Satış: "16.480,00" },
-            "gumus": { Alış: "32,00", Satış: "33,00" },
-            "USD": { Alış: "32,50", Satış: "32,60" },
-            "EUR": { Alış: "35,10", Satış: "35,25" }
-        };
 
         async function fetchData() {
             const statusDot = document.getElementById('sync-status');
             const statusText = document.getElementById('status-text');
             
-            // Farklı proxy kaynaklarını sırayla dene
-            const proxies = [
-                `https://api.allorigins.win/get?url=${encodeURIComponent('https://finans.truncgil.com/today.json?v=' + Math.random())}`,
-                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent('https://finans.truncgil.com/today.json')}`
-            ];
+            try {
+                // Cache engellemek için her seferinde farklı bir URL (?v=...)
+                const proxy = "https://api.allorigins.win/get?url=";
+                const target = encodeURIComponent(`https://finans.truncgil.com/today.json?v=${Date.now()}`);
+                
+                const response = await fetch(proxy + target);
+                const result = await response.json();
+                const data = JSON.parse(result.contents);
 
-            let success = false;
-
-            for (let url of proxies) {
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) continue;
-                    
-                    const result = await response.json();
-                    const data = typeof result.contents === 'string' ? JSON.parse(result.contents) : (result.contents || result);
-
-                    if (data && data["gram-altin"]) {
-                        renderUI(data);
-                        success = true;
-                        break;
-                    }
-                } catch (e) {
-                    console.warn("Yol denendi ve başarısız oldu...");
+                if (data["gram-altin"]) {
+                    renderUI(data);
+                    statusDot.className = 'status-dot bg-green-500';
+                    statusText.innerText = "Sistem Güncel";
+                    statusText.className = "text-[10px] font-bold text-green-600 uppercase italic";
                 }
-            }
-
-            if (success) {
-                statusDot.className = 'status-dot bg-green-500';
-                statusText.innerText = "Canlı";
-                statusText.className = "text-[9px] font-bold text-green-600 uppercase italic";
-            } else {
+            } catch (e) {
                 statusDot.className = 'status-dot bg-red-500';
                 statusText.innerText = "Yenileniyor...";
-                statusText.className = "text-[9px] font-bold text-red-600 uppercase italic";
             }
         }
 
@@ -120,7 +110,7 @@
             let html = '';
 
             URUNLER.forEach(item => {
-                const source = data[item.id] || fallbackData[item.id];
+                const source = data[item.id];
                 if (!source) return;
 
                 let buy = parseFloat(source.Alış.replace('.', '').replace(',', '.'));
@@ -132,21 +122,21 @@
                 }
 
                 html += `
-                    <div class="gold-card p-6 update-flash">
-                        <div class="flex justify-between items-center mb-6">
-                            <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center border border-amber-100">
+                    <div class="gold-card p-5 update-flash">
+                        <div class="flex justify-between items-center mb-5">
+                            <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center border border-amber-100 shadow-sm">
                                 <i class="fas ${item.icon} text-amber-600 text-lg"></i>
                             </div>
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">${item.ad}</span>
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">${item.ad}</span>
                         </div>
                         <div class="flex justify-between items-end">
                             <div class="flex flex-col">
-                                <span class="text-[9px] text-slate-400 font-black mb-1 italic">ALIŞ</span>
-                                <span class="price-font text-xl font-bold text-slate-600">${format(buy)}</span>
+                                <span class="text-[8px] text-slate-400 font-black mb-1">ALIŞ</span>
+                                <span class="price-font text-lg font-bold text-slate-600 italic">${format(buy)}</span>
                             </div>
-                            <div class="flex flex-col text-right">
-                                <span class="text-[9px] text-amber-600 font-black mb-1 uppercase italic">SATIŞ</span>
-                                <span class="price-font text-3xl font-extrabold text-slate-900 tracking-tighter">${format(sell)}</span>
+                            <div class="text-right">
+                                <span class="text-[8px] text-amber-600 font-black mb-1 uppercase italic">SATIŞ</span>
+                                <span class="price-font text-2xl font-extrabold text-slate-900 tracking-tighter">${format(sell)}</span>
                             </div>
                         </div>
                     </div>
@@ -166,12 +156,10 @@
         }
 
         setInterval(updateClock, 1000);
-        setInterval(fetchData, 15000); // 15 saniyede bir dene
+        setInterval(fetchData, 10000); // 10 saniyede bir tam güncelleme
 
         updateClock();
-        renderUI(fallbackData); // İlk açılışta yedekleri göster
-        fetchData(); // Hemen gerçek veriyi çekmeye çalış
+        fetchData();
     </script>
 </body>
 </html>
-
